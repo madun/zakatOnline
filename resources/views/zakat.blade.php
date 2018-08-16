@@ -66,19 +66,19 @@
                         <form action="" class="ng-pristine ng-valid">
                             <div class="zakat-multitab-content-row">
                                 <div class="block-half input">
-                                    <input class="form-input form-input-custom js-modal-perdagangan" type="name" placeholder="Modal (1 Tahun)">
+                                    <input class="form-input form-input-custom js-modal-perdagangan" type="text" onkeyup="toRp('perdagangan')" placeholder="Modal (1 Tahun)">
                                 </div>
                                 <div class="block-half input">
-                                    <input class="form-input form-input-custom js-keuntungan-perdagangan" type="name" placeholder="Keuntungan (1 Tahun)">
+                                    <input class="form-input form-input-custom js-keuntungan-perdagangan" type="text" onkeyup="toRp('perdagangan')" placeholder="Keuntungan (1 Tahun)">
                                 </div>
                                 <div class="block-half input">
-                                    <input class="form-input form-input-custom js-kerugian-perdagangan" type="name" placeholder="Hutang/Kerugian (1 Tahun)">
+                                    <input class="form-input form-input-custom js-kerugian-perdagangan" type="text" onkeyup="toRp('perdagangan')" placeholder="Hutang/Kerugian (1 Tahun)">
                                 </div>
                                 <div class="block-half input">
-                                    <input class="form-input form-input-custom js-hutang-perdagangan" type="name" placeholder="Hutang Jatuh Tempo">
+                                    <input class="form-input form-input-custom js-hutang-perdagangan" type="text" onkeyup="toRp('perdagangan')" placeholder="Hutang Jatuh Tempo">
                                 </div>
                                 <div class="block-half input">
-                                    <input class="form-input form-input-custom js-piutang-perdagangan" type="name" placeholder="Piutang Dagang">
+                                    <input class="form-input form-input-custom js-piutang-perdagangan" type="text" onkeyup="toRp('perdagangan')" placeholder="Piutang Dagang">
                                 </div>
                             </div>
                         </form>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
                 <div class="zakat-multitab-result">
-                    <div id="penghasilanResult" class="zakat-multitab-result-item is-active" data-calculator="tabungan">
+                    <div id="penghasilanResult" class="zakat-multitab-result-item" data-calculator="tabungan">
                         <div class="text-center">
                             <div class="zakat-multitab-result-title">
                                 <span class="">Total Zakat Penghasilan</span>
@@ -129,7 +129,8 @@
                             <div class="zakat-multitab-note">
                                 <small>Note :</small>
                                 <ul>
-                                    <li><small>Harga beras saat ini</small></li>
+                                    <li><small>Harga beras saat ini : Rp. 12.000</small></li>
+                                    <li><small>Harga emas saat ini (gram): Rp. 659.000</small></li>
                                     <li><small>NISHAB (520 kg beras): </small></li>
                                 </ul>
                                 <small>*Sumber: BPS</small>
@@ -206,11 +207,11 @@
     var valRange = 1;
     var zakat = '';
 
+    var angka = '';
     function toRp(typeZakat){
         zakat = typeZakat;
-        var angka = '';
         if(typeZakat=='penghasilan'){
-
+            var profesi = '';
             var valPenghasilanProfesi = $('#valPenghasilanProfesi').val(),
             valPenghasilanLain = $('#valPenghasilanLain').val(), 
             valPenghasilanHutang = $('#valPenghasilanHutang').val();
@@ -219,14 +220,39 @@
             if(valPenghasilanLain==null){valPenghasilanLain=0}
             if(valPenghasilanHutang==null){valPenghasilanHutang=0}
 
-            angka = 2.5 / 100 * (Number(valPenghasilanProfesi) + Number(valPenghasilanLain) - Number(valPenghasilanHutang)) * valRange;
+            profesi = 2.5 / 100 * (Number(valPenghasilanProfesi) + Number(valPenghasilanLain) - Number(valPenghasilanHutang)) * valRange;
+            angka = profesi.toFixed(0);
             if(angka < 0){
                 angka=0;
             }
             
         } else if(typeZakat=='emas'){
-            angka = 30;
-            // console.log('emas');
+            var valJumlah = null;
+            var valHarga = null;
+            var totalEmas = null;
+            valJumlah = $('.js-jumlah-emas').val();
+            valHarga = $('.js-harga-emas').val();
+            totalEmas = 2.5 / 100 * (valJumlah * valHarga);
+            angka = totalEmas.toFixed(0);
+            
+        } else if(typeZakat=='perdagangan'){
+            var valModal = null;
+            var valKeuntungan = null;
+            var valKerugian = null;
+            var valHutang = null;
+            var valPiutang = null;
+            
+            valModal = $('.js-modal-perdagangan').val();
+            valKeuntungan = $('.js-keuntungan-perdagangan').val();
+            valKerugian = $('.js-kerugian-perdagangan').val();
+            valHutang = $('.js-hutang-perdagangan').val();
+            valPiutang = $('.js-piutang-perdagangan').val();
+            var totalPerdagangan = null;
+            totalPerdagangan = 2.5 / 100 * (valModal + valKeuntungan + valPiutang) - (valHutang + valKerugian);
+            angka = totalPerdagangan.toFixed(0);
+            if (angka < 0) {
+                angka = 0;
+            }
             
         }
 
